@@ -24,31 +24,31 @@ app.param('name', function (req, res, next) {
   next();
 });
 
-app.get('/blocks', function (req, res) {
-  res.json(Object.keys(blocks));
-});
+app.route('/blocks')
+  .get(function (req, res) {
+    res.json(Object.keys(blocks));
+  })
+  .post(parseUrlencoded, function (req, res) {
+    var newBlock = req.body;
+    blocks[newBlock.name] = newBlock.description;
 
-app.post('/blocks', parseUrlencoded, function (req, res) {
-  var newBlock = req.body;
-  blocks[newBlock.name] = newBlock.description;
+    res.status(201).json(newBlock.name);
+  });
 
-  res.status(201).json(newBlock.name);
-});
+app.route('/blocks/:name')
+  .get(function (req, res) {
+    var description = blocks[req.blockName];
 
-app.get('/blocks/:name', function (req, res) {
-  var description = blocks[req.blockName];
-
-  if(!description) {
-    res.status(404).json('No description found for ' + req.params.name);
-  } else {
-    res.json(description);
-  }
-});
-
-app.delete('/blocks/:name', function (req, res) {
-  delete blocks[req.blockName];
-  res.sendStatus(200);
-});
+    if(!description) {
+      res.status(404).json('No description found for ' + req.params.name);
+    } else {
+      res.json(description);
+    }
+  })
+  .delete(function (req, res) {
+    delete blocks[req.blockName];
+    res.sendStatus(200);
+  });
 
 app.listen(1234, function() {
   console.log("Listening on port 1234");
