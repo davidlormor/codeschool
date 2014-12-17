@@ -1,0 +1,20 @@
+<html>
+  <head>
+    <title>Chattr</title>
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js" charset="utf-8"></script>
+  </head>
+  <body>
+  <form id="chat_form" action="submit">
+    <input id="chat_input" type="text" placeholder="Enter your chat">
+    <button type="submit" name="button" value="Chat"></button>
+  </form>
+  <script src="/socket.io/socket.io.js" charset="utf-8"></script>
+  <script charset="utf-8">
+  var socket = io.connect('http://localhost:8080');
+  $('#chat_form').submit(function(e){
+    var message = $('#chat_input').val();
+    socket.emit('messages', message);
+  });
+  </script>
+  </body>
+</html>
